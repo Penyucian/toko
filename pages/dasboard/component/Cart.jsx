@@ -1,6 +1,6 @@
 import React from "react";
-import { Datadummy } from "../../../dataDummy/index";
 
+const Datadummy = []
 export default function ListProduct({setCart}) {
     return(
         <div className="fixed top-0 h-screen w-screen bg-gray-900/[.75] z-50 flex flex-col justify-center items-center">

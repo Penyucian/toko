@@ -1,20 +1,13 @@
 import axios from "axios";
 import React, {useEffect, useState} from "react";
-import { ReactSearchAutocomplete } from 'react-search-autocomplete';
+import { useFormInput } from "../../../utils/hooks/useForm";
 
-export default function Navbar({setDrugs,setCart, value}) {
+export default function Navbar({setDrugs,setCart, setSearch, logout, setLogout, filter, setFilter}) {
 
-    const [data, setData] = useState('');
-    useEffect(() => {
-        async function fetchData() {
-            await axios.get('http://localhost:3000/api/obat')
-                .then(res => {
-                    setData(res.data.result)
-                })
-        }
-        const dataInterval = setInterval(fetchData, 5000);
-        fetchData()
-        return () => clearInterval(dataInterval)
+    const search = useFormInput('')
+
+    useEffect(()=>{
+        setSearch(search.value)
     })
 
     return(
@@ -25,16 +18,27 @@ export default function Navbar({setDrugs,setCart, value}) {
                 </span>
             </div>
             <div className="w-1/3 flex justify-center">
-                <div className="h-full rounded-full flex justify-center items-center">
-                    <div style={{width:400, display:"flex",flexDirection:"column"}}>                    
-                        <ReactSearchAutocomplete
-                        items={data}            
-                        onSelect={(item)=>{
-                            value.setSearch(item.id)
-                        }} />
-                    </div>
+                <div className="h-full rounded-full flex justify-center items-center bg-white rounded-full">
+                    <input 
+                        className="pl-8 pr-4 h-full w-full rounded-l-full h-full flex justify-center items-center p-4 font-medium font-bold hover:bg-gray-50" 
+                        type="text" 
+                        name="" 
+                        id=""
+                        {...search}
+                    />
+                    <button 
+                        className="h-full flex justify-center items-center p-4 hover:bg-gray-50 material-icons-round"
+                        onClick={()=>{
+                            if (filter) {
+                                setFilter(false)
+                            } else {
+                                setFilter(true)
+                            }
+                        }}
+                    >
+                        filter_list</button>
+                    <button className="h-full flex justify-center items-center p-4 pr-8 rounded-r-full hover:bg-gray-50 material-icons-round">search</button>
                 </div>
-                <button className="h-full w-full flex justify-center items-center p-4 hover:bg-gray-100 material-icons-round">filter_list</button>
             </div>
             <div className="w-1/3 flex justify-end">
                 <button className="h-full max-w-fit p-4 mr-4 rounded-full border bg-white material-icons-round hover:bg-gray-100"
@@ -46,7 +50,15 @@ export default function Navbar({setDrugs,setCart, value}) {
                     onClick={()=>setDrugs(true)}>
                     inventory_2
                 </button>
-                <button className="h-full max-w-fit p-4 rounded-full border bg-white material-icons-round hover:bg-gray-100">
+                <button 
+                    className="h-full max-w-fit p-4 rounded-full border bg-white material-icons-round hover:bg-gray-100"
+                    onClick={()=>{
+                        if (logout) {
+                            setLogout(false)
+                        } else {
+                            setLogout(true)
+                        }
+                    }}>
                     person
                 </button>
             </div>

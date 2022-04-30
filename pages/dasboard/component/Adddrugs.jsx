@@ -1,8 +1,7 @@
 import React from "react";
 import { useState } from "react";
-import { useFormInput } from "../../../components/useForm";
+import { useFormInput } from "../../../utils/hooks/useForm";
 import axios from "axios";
-import { Datadummy } from "../../../dataDummy/index";
 
 export default function Adddrugs({setDrugs}) {
 

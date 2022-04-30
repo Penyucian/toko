@@ -61,10 +61,59 @@ const addDrugs = async (req, res, next) => {
     } 
 }
 
+const selectDrugs = async (req, res, next) => {
+
+    const name = req.body.name;
+    const category = req.body.category
+
+    let where
+
+    if (category) {
+        where = `category = '${category}'`
+    } else if(name) {
+        where = `name like '%${name}%'`
+    } else if(name && category) {
+        where = `name like '%${name}%' and category = '${category}'`
+    }
+
+    const [rows] = await db.query(`SELECT * FROM obat where ${where}`)
+
+    if (rows.length != 0) {
+        res.json({
+            "code":200,
+            "result":rows
+        })
+    } else {
+        res.json({
+            "code": 200,
+            "message": "Obat tidak ditemukan"
+        })
+    }   
+}
+
+const selectCategory = async (req, res, next) => {
+
+    const [rows] = await db.query(`SELECT category FROM obat group by category`)
+
+    if (rows.length != 0) {
+        res.json({
+            "code":200,
+            "result":rows
+        })
+    } else {
+        res.json({
+            "code": 200,
+            "message": "Obat tidak ditemukan"
+        })
+    }   
+}
+
 
 const drugsController = {
     getAllDrugs,
     addDrugs,
+    selectDrugs,
+    selectCategory
 }
 
 module.exports = drugsController

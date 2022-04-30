@@ -1,20 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
 import Router from "next/router";
+import { useFormInput } from "../../utils/hooks/useForm";
 
 export default function Home() {
-
-  const useFormInput = initialValue => {
-    const [value, setValue] = useState(initialValue);
-
-    const handleChange = e => {
-        setValue(e.target.value);
-    }
-    return {
-        value,
-        onChange: handleChange
-    }
-  }
 
   const username = useFormInput('');
   const password = useFormInput('');

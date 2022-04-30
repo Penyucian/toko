@@ -1,5 +1,5 @@
 import nc from "next-connect";
-import { selectDrugs } from "../../../controllers/obat/id";
+import { selectCategory } from "../../../../controllers/obat";
 
 const handler = nc({
     onError: (err, req, res, next) => {
@@ -11,6 +11,6 @@ const handler = nc({
     },
 })
 
-handler.post(selectDrugs)
+handler.get(selectCategory)
 
 export default handler
