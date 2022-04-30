@@ -1,11 +1,20 @@
 import React from "react";
-import { useState } from "react";
+import { useEffect, useState} from "react";
 import Product from "./Product";
-import getAllObat from "../../../utils/fetcherObat";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
-export default function ListProduct({search}) {
-    
-    const {obat, isLoading, isError} = getAllObat(search)
+
+const queryClient = new QueryClient() 
+
+export default function ListProduct() {
+    return (
+        <QueryClientProvider client={queryClient}>
+            <Inject />
+        </QueryClientProvider>
+    )
+} 
+
+function Inject({search, arrayCategory}) {
 
     if (isLoading) return (
         <div className="h-screen w-screen flex justify-center items-center">
@@ -20,7 +29,7 @@ export default function ListProduct({search}) {
 
     return(
         <div className="z-10 pt-24 pb-4 h-screen w-full flex justify-center">
-            <div className="relative max-h-max w-1/2 bg- overflow-x-auto shadow-lg sm:rounded-lg">
+            <div className="relative max-h-max w-full bg- overflow-x-auto shadow-lg sm:rounded-lg">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-slate-50  sticky top-0">
                         <tr>
@@ -42,7 +51,6 @@ export default function ListProduct({search}) {
                         </tr>
                     </thead>
                     <tbody className="h-1/2">
-                        
                         {obat.result.map((item) => {
                             return (
                                 <Product item={item} key={item.id} />
@@ -53,4 +61,5 @@ export default function ListProduct({search}) {
             </div>
         </div>
     )
+    
 }
