@@ -11,6 +11,6 @@ const handler = nc({
     },
 })
 
-handler.get(selectDrugs)
+handler.post(selectDrugs)
 
 export default handler

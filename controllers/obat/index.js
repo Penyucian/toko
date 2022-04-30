@@ -4,6 +4,7 @@ const JWT = require(`jsonwebtoken`)
 const JWT_KEY = process.env.JWT_KEY
 
 const getAllDrugs = async (req, res, next) => {
+    
 
     const [rows] = await db.query(`select * from obat`)
     if (rows.length != 0) {
@@ -69,11 +70,17 @@ const selectDrugs = async (req, res, next) => {
     let where
 
     if (category) {
-        where = `category = '${category}'`
+        const first = JSON.stringify(category).replace("[",'(')
+        const second = first.replace("]",')')
+
+        where = `category in ${second}`
     } else if(name) {
         where = `name like '%${name}%'`
     } else if(name && category) {
-        where = `name like '%${name}%' and category = '${category}'`
+        const first = JSON.stringify(category).replace("[",'(')
+        const second = first.replace("]",')')
+        
+        where = `name like '%${name}%' and category in  ${second}`
     }
 
     const [rows] = await db.query(`SELECT * FROM obat where ${where}`)

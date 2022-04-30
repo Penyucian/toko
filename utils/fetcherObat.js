@@ -1,32 +1,31 @@
 import axios from "axios";
 import useSWR from "swr";
 
-
-function getAllObat(search) {
-
-
-    // if (search != '') {
-
-        // const fetcher = (url, pass) => axios.get(url, pass, {headers: {"Content-Type": "application/json"}}).then(res=>res.data);        
-        // const {data, error} = useSWR(`/api/obat/name`, {"name":search}, fetcher)
-
-        // return{
-        //     obat: data,
-        //     isLoading:!error && !data,
-        //     isError: error
-        // }
-
-    // } else {
+function getBySearch(search) {
+    if (search) {
+        const fetcher = (url, token) => fetch(url,token).then(r => r.json())
+        const {data, error} = useSWR(`/api/obat/name`,{method:'POST', headers:{'Content-Type': 'application/json'}, body:{name:search}}, fetcher);
         
-        const fetcher = url => axios.get(url).then(res=>res.data);
-        const {data, error} = useSWR(`/api/obat`, fetcher);
-        
+        console.log(data);
+
         return{
             obat: data,
             isLoading:!error && !data,
             isError: error
-        }
-    // }
+        } 
+    }
 }
 
-export default getAllObat
+function getAllObat() {
+
+    const fetcher = url => axios.get(url).then(res=>res.data);
+    const {data, error} = useSWR(`/api/obat`, fetcher);
+    
+    return{
+        obat: data,
+        isLoading:!error && !data,
+        isError: error
+    }  
+}
+
+export {getAllObat, getBySearch}

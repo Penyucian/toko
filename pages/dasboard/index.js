@@ -4,7 +4,6 @@ import ListProduct from "./component/ListProduct";
 import Cart from "./component/Cart";
 import Adddrugs from "./component/Adddrugs";
 import Logout from "./component/Logout";
-import Filter from "./component/Filter";
 import { useEffect, useState } from 'react';
 
 export default function Home() {
@@ -13,7 +12,7 @@ export default function Home() {
   const [cart, setCart] = useState(false);
   const [search, setSearch] = useState('');
   const [logout, setLogout] = useState(false);
-  const [filter, setFilter] = useState(false);
+  const [arrayCategory, setArrayCategory] = useState([])
 
 
   return (
@@ -23,13 +22,12 @@ export default function Home() {
         setCart={setCart} 
         setSearch={setSearch} 
         logout={logout} 
-        setLogout={setLogout} 
-        filter={filter} 
-        setFilter={setFilter}
+        setLogout={setLogout}  
+        setArrayCategory={setArrayCategory}
+        arrayCategory={arrayCategory}
       />
-      <ListProduct search={search} />
+      <ListProduct search={search} arrayCategory={arrayCategory} />
       {logout && <Logout />}
-      {filter && <Filter />}
       {drugs && <Adddrugs setDrugs={setDrugs} />}
       {cart && <Cart setCart={setCart} />}
     </div>

@@ -1,16 +1,18 @@
 import axios from "axios";
 import React, {useEffect, useState} from "react";
 import { useFormInput } from "../../../utils/hooks/useForm";
+import ListFilter from "./ListFilter";
 
-export default function Navbar({setDrugs,setCart, setSearch, logout, setLogout, filter, setFilter}) {
+export default function Navbar({setDrugs,setCart, setSearch, logout, setLogout, setArrayCategory, arrayCategory}) {
 
     const search = useFormInput('')
+    const [filter, setFilter] = useState(false)
 
     useEffect(()=>{
         setSearch(search.value)
     })
 
-    return(
+    return(<>
         <div className="fixed z-30 pt-4 px-4 w-full flex justify-between">
             <div className="w-1/3 py-4 px-4">
                 <span className="material-icons-round">
@@ -18,7 +20,7 @@ export default function Navbar({setDrugs,setCart, setSearch, logout, setLogout, 
                 </span>
             </div>
             <div className="w-1/3 flex justify-center">
-                <div className="h-full rounded-full flex justify-center items-center bg-white rounded-full">
+                <form className="h-full rounded-full flex justify-center items-center bg-white rounded-full" onClick={e=>e.preventDefault()}>
                     <input 
                         className="pl-8 pr-4 h-full w-full rounded-l-full h-full flex justify-center items-center p-4 font-medium font-bold hover:bg-gray-50" 
                         type="text" 
@@ -38,7 +40,7 @@ export default function Navbar({setDrugs,setCart, setSearch, logout, setLogout, 
                     >
                         filter_list</button>
                     <button className="h-full flex justify-center items-center p-4 pr-8 rounded-r-full hover:bg-gray-50 material-icons-round">search</button>
-                </div>
+                </form>
             </div>
             <div className="w-1/3 flex justify-end">
                 <button className="h-full max-w-fit p-4 mr-4 rounded-full border bg-white material-icons-round hover:bg-gray-100"
@@ -63,5 +65,7 @@ export default function Navbar({setDrugs,setCart, setSearch, logout, setLogout, 
                 </button>
             </div>
         </div>
+        {filter && <ListFilter setArrayCategory={setArrayCategory} arrayCategory={arrayCategory} />}
+        </>
     )
 }
