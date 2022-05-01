@@ -6,15 +6,17 @@ import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
 const queryClient = new QueryClient() 
 
-export default function ListProduct() {
+export default function ListProduct({search}) {
     return (
         <QueryClientProvider client={queryClient}>
-            <Inject />
+            <Inject search={search}/>
         </QueryClientProvider>
     )
 } 
 
-function Inject({search, arrayCategory}) {
+function Inject({search}) {
+
+    const {isLoading, error, data} = useQuery('repoData', ()=>fetch('http://localhost:3000/api/obat').then(res => res.json()))
 
     if (isLoading) return (
         <div className="h-screen w-screen flex justify-center items-center">
@@ -25,41 +27,54 @@ function Inject({search, arrayCategory}) {
         </ div>
     )
 
-    if (isError) return <p className="h-screen w-screen flex justify-center items-center">{isError}</p>
+    if (error) return <p className="h-screen w-screen flex justify-center items-center">{error}</p>
+
+    const getBySearch = data.result.filter((item) =>{
+        return (item.name.toLowerCase().includes(search.toLowerCase()) || item.category.toLowerCase().includes(search.toLowerCase()))
+    })
 
     return(
-        <div className="z-10 pt-24 pb-4 h-screen w-full flex justify-center">
-            <div className="relative max-h-max w-full bg- overflow-x-auto shadow-lg sm:rounded-lg">
-                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-slate-50  sticky top-0">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">
-                                Nama obat
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Jenis
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                stok
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                harga
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                <span className="sr-only">Kuantitas</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="h-1/2">
-                        {obat.result.map((item) => {
-                            return (
-                                <Product item={item} key={item.id} />
-                            )
-                        })}
-                    </tbody>
-                </table>
+        <>
+        {getBySearch.length == 0 ? 
+            <div className="h-screen w-screen flex justify-center items-center">
+                <h2 className="p-4 bg-white font-medium rounded-lg ">Data tidak ditemukan</h2>
             </div>
-        </div>
+            :
+            <div className="z-10 pt-24 h-screen w-full flex justify-center">
+                <div className="relative max-h-max w-full bg- overflow-x-auto shadow-lg sm:rounded-lg">
+                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-slate-50  sticky top-0">
+                            <tr>
+                                <th scope="col" className="px-6 py-3">
+                                    Nama obat
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Jenis
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    stok
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    harga
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <span className="sr-only">Kuantitas</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="h-1/2">
+                            { getBySearch.map((item) => {
+                                console.log(item);
+                                return (
+                                    <Product item={item} key={item.id} />
+                                )    
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            }
+        </>
     )
     
 }

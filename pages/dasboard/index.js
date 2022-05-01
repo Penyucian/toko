@@ -12,7 +12,6 @@ export default function Home() {
   const [cart, setCart] = useState(false);
   const [search, setSearch] = useState('');
   const [logout, setLogout] = useState(false);
-  const [arrayCategory, setArrayCategory] = useState([])
 
 
   return (
@@ -22,11 +21,9 @@ export default function Home() {
         setCart={setCart} 
         setSearch={setSearch} 
         logout={logout} 
-        setLogout={setLogout}  
-        setArrayCategory={setArrayCategory}
-        arrayCategory={arrayCategory}
+        setLogout={setLogout} 
       />
-      <ListProduct search={search} arrayCategory={arrayCategory} />
+      <ListProduct search={search} />
       {logout && <Logout />}
       {drugs && <Adddrugs setDrugs={setDrugs} />}
       {cart && <Cart setCart={setCart} />}

@@ -1,9 +1,8 @@
 import axios from "axios";
 import React, {useEffect, useState} from "react";
 import { useFormInput } from "../../../utils/hooks/useForm";
-import ListFilter from "./ListFilter";
 
-export default function Navbar({setDrugs,setCart, setSearch, logout, setLogout, setArrayCategory, arrayCategory}) {
+export default function Navbar({setDrugs,setCart, setSearch, logout, setLogout, setArrayCategory}) {
 
     const search = useFormInput('')
     const [filter, setFilter] = useState(false)
@@ -28,18 +27,15 @@ export default function Navbar({setDrugs,setCart, setSearch, logout, setLogout, 
                         id=""
                         {...search}
                     />
-                    <button 
-                        className="h-full flex justify-center items-center p-4 hover:bg-gray-50 material-icons-round"
-                        onClick={()=>{
-                            if (filter) {
-                                setFilter(false)
-                            } else {
-                                setFilter(true)
-                            }
+                    <button
+                        className="h-full flex justify-center items-center p-4 pr-8 rounded-r-full hover:bg-gray-50 material-icons-round"
+                        onClick={(e)=>{
+                            e.preventDefault()
+                            setSearch(search.value)
                         }}
-                    >
-                        filter_list</button>
-                    <button className="h-full flex justify-center items-center p-4 pr-8 rounded-r-full hover:bg-gray-50 material-icons-round">search</button>
+                        >
+                            search
+                    </button>
                 </form>
             </div>
             <div className="w-1/3 flex justify-end">
@@ -65,7 +61,7 @@ export default function Navbar({setDrugs,setCart, setSearch, logout, setLogout, 
                 </button>
             </div>
         </div>
-        {filter && <ListFilter setArrayCategory={setArrayCategory} arrayCategory={arrayCategory} />}
+        {filter && <ListFilter setArrayCategory={setArrayCategory} setFilter={setFilter} />}
         </>
     )
 }
