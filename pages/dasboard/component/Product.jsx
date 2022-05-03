@@ -1,13 +1,13 @@
 import React, {useContext} from "react";
 import { useState } from "react";
-import CartContext from "../../../utils/context/CartContext";
+import DataContext from "../../../utils/context/DataContext";
 export default function Product({item}) {
 
     const {id, name, batch, category, ed, stock, price} = item
     const [stocks, setStocks] = useState(stock)
     const [quantity, setQuantity] = useState(0)
 
-    const {cartData, setCartData} = useContext(CartContext)
+    const {cartData, setCartData} = useContext(DataContext)
 
     let stockFinal = [];
 
@@ -23,6 +23,7 @@ export default function Product({item}) {
                     stockFinal = {id:id, name:name,batch:batch,category:category,ed:ed, stockCurr:stockCur, quantityCurr:quantityCur, price:price, total:total}
                     const data = [...cartData,stockFinal]
                     setCartData([...new Set(data)])
+                    console.log(cartData);
                 } else if(o.id === id) {
                     const objIndex = cartData.findIndex((obj => obj.id == id));
                     const total = quantityCur*cartData[objIndex].price
@@ -30,6 +31,7 @@ export default function Product({item}) {
                     cartData[objIndex].quantityCurr = quantityCur
                     cartData[objIndex].total = total
                     setCartData([...new Set(cartData)])
+                    console.log(cartData);
                 }}
             )
         }

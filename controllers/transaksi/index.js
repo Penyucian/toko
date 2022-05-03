@@ -37,33 +37,26 @@ const updateDrugs = async (req, res, next) => {
     
     const [rows] = await db.query(`select * from obat where id = ?`, [id])
 
-    if (stock) {
-        if (rows.length != 0) {
-            db.query(`update obat set stock = ? where id = ?`,[stock,id])
-            .then(() => {
-                res.json({
-                    "success": true,
-                    "message": "Stok terupdate"
-                })
-            })
-            .catch((err) => {
-                res.json({
-                    "success": false,
-                    "error": err
-                })
-            })
-        } else {
+    if (rows.length != 0) {
+        db.query(`update obat set stock = ? where id = ?`,[stock,id])
+        .then(() => {
             res.json({
-                "code": 200,
-                "message": "Stok tidak terupdate"
+                "success": true,
+                "message": "Stok terupdate"
             })
-        }   
+        })
+        .catch((err) => {
+            res.json({
+                "success": false,
+                "error": err
+            })
+        })
     } else {
         res.json({
             "code": 200,
-            "message": "Cek data stok yang dibeli"
+            "message": "Stok tidak terupdate"
         })
-    } 
+    }   
 }
 
 

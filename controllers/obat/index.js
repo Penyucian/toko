@@ -6,7 +6,7 @@ const JWT_KEY = process.env.JWT_KEY
 const getAllDrugs = async (req, res, next) => {
     
 
-    const [rows] = await db.query(`select * from obat`)
+    const [rows] = await db.query(`select * from obat where stock <> 0`)
     if (rows.length != 0) {
         res.json({
             "success": true,
@@ -61,6 +61,7 @@ const addDrugs = async (req, res, next) => {
         })
     } 
 }
+
 
 const selectDrugs = async (req, res, next) => {
 

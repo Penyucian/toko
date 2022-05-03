@@ -1,21 +1,53 @@
 import React, {useContext, useState} from "react";
 import axios from "axios";
-import CartContext from "../../../utils/context/CartContext";
+import DataContext from "../../../utils/context/DataContext";
 
-export default function Cart({setCart, cartData2}) {
+export default function Cart({setCart}) {
 
-    const item = cartData2.result
-    const {cartData} = useContext(CartContext)
+    const {cartData, setCartData} = useContext(DataContext)
 
-    const [message, setMessage] = useState()
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState()
 
     let result2 = cartData
 
     const total = result2.map(item => item.total).reduce((prev, next) => prev + next);
-    console.log(result2);
 
-    return(
-        <div className="fixed top-0 h-screen w-screen bg-gray-900/[.75] z-50 flex flex-col justify-center items-center">
+    function sendData() {
+        setIsLoading(true)
+        axios.post("http://localhost:3000/api/transaksi",
+            {
+                json : result2,
+                total : total
+            }, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(() => {
+            result2.map(item =>{
+                axios.put("http://localhost:3000/api/transaksi",
+                {
+                    id : item.id,
+                    stock : item.stockCurr
+                }, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+                })
+            })
+        })
+        .then(()=>{setIsLoading(false);  window.location.reload(true)})
+        .catch(err=>setError(err))
+    }
+
+    return(<>
+        {isLoading ? 
+            <div className="text-white p-1 bg-blue-700 rounded-lg">Loading...</div> 
+
+            :
+        
+            <div className="fixed top-0 h-screen w-screen bg-gray-900/[.75] z-50 flex flex-col justify-center items-center">
             <button className="material-icons-round fixed right-4 top-4 p-4 bg-white rounded-full"
             onClick={()=>{setCart(false)}}>
                 close
@@ -84,10 +116,12 @@ export default function Cart({setCart, cartData2}) {
                     </tfoot>
                 </table>
             </div>
-            <div className="w-1/2 mt-4 flex justify-between material-icons-round ">
-                <button className="p-4 rounded-full bg-white" type="submit">delete</button>
-                <button className="p-4 rounded-full bg-blue-500 text-white" type="submit">done</button>
+            <div className="w-1/2 mt-4 flex justify-end material-icons-round ">
+                <button className="p-4 rounded-full bg-blue-500 text-white" type="submit" onClick={()=>{sendData(); setCart(false);}}>done</button>
             </div>
         </div>
+
+        }
+    </>
     )
 }

@@ -1,9 +1,10 @@
-import axios from "axios";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useContext} from "react";
 import { useFormInput } from "../../../utils/hooks/useForm";
+import DataContext from "../../../utils/context/DataContext";
 
 export default function Navbar({setDrugs,setCart, setSearch, logout, setLogout, setArrayCategory}) {
 
+    const {cartData} = useContext(DataContext)
     const search = useFormInput('')
     const [filter, setFilter] = useState(false)
 
@@ -40,12 +41,15 @@ export default function Navbar({setDrugs,setCart, setSearch, logout, setLogout, 
             </div>
             <div className="w-1/3 flex justify-end">
                 <button className="h-full max-w-fit p-4 mr-4 rounded-full border bg-white material-icons-round hover:bg-gray-100"
-                    onClick={()=>setCart(true)}>
+                    onClick={()=>{
+                        if (cartData) {
+                            setCart(true); setDrugs(false); setLogout(false)   
+                        }}}>
                     shopping_cart
                 </button>
                 <button
                     className="h-full max-w-fit p-4 mr-4 rounded-full border bg-white material-icons-round hover:bg-gray-100"
-                    onClick={()=>setDrugs(true)}>
+                    onClick={()=>{setDrugs(true); setLogout(false); setCart(false)}}>
                     inventory_2
                 </button>
                 <button 

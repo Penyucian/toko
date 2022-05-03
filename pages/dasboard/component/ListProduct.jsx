@@ -5,15 +5,15 @@ import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
 const queryClient = new QueryClient() 
 
-export default function ListProduct({search, setCartData2}) {
+export default function ListProduct({search}) {
     return (
         <QueryClientProvider client={queryClient}>
-            <Inject search={search} setCartData2={setCartData2}/>
+            <Inject search={search} />
         </QueryClientProvider>
     )
 } 
 
-function Inject({search, setCartData2}) {
+function Inject({search}) {
 
     const {isLoading, error, data} = useQuery('repoData', ()=>fetch('http://localhost:3000/api/obat').then(res => res.json()))
 
@@ -27,8 +27,6 @@ function Inject({search, setCartData2}) {
     )
 
     if (error) return <p className="h-screen w-screen flex justify-center items-center">{error}</p>
-
-    setCartData2(data)
 
     const getBySearch = data.result.filter((item) =>{
         return (item.name.toLowerCase().includes(search.toLowerCase()) || item.category.toLowerCase().includes(search.toLowerCase()))
