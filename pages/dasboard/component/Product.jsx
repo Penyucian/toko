@@ -1,14 +1,39 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { cartHooks } from "../../../utils/hooks/cartHooks";
-
+import React, {useContext} from "react";
+import { useState } from "react";
+import CartContext from "../../../utils/context/CartContext";
 export default function Product({item}) {
 
     const {id, name, batch, category, ed, stock, price} = item
     const [stocks, setStocks] = useState(stock)
     const [quantity, setQuantity] = useState(0)
 
-    cartHooks(id, price)
+    const {cartData, setCartData} = useContext(CartContext)
+
+    let stockFinal = [];
+
+    const updateStock = (id, stockCur, quantityCur) =>{
+        if (!cartData) {
+            const total = quantityCur*price
+            stockFinal = [{id:id, name:name,batch:batch,category:category,ed:ed, stockCurr:stockCur, quantityCurr:quantityCur, price:price, total:total}]
+            setCartData(stockFinal)
+        } else{
+            cartData.find(o => {
+                if (o.id !== id) {
+                    const total = quantityCur*price
+                    stockFinal = {id:id, name:name,batch:batch,category:category,ed:ed, stockCurr:stockCur, quantityCurr:quantityCur, price:price, total:total}
+                    const data = [...cartData,stockFinal]
+                    setCartData([...new Set(data)])
+                } else if(o.id === id) {
+                    const objIndex = cartData.findIndex((obj => obj.id == id));
+                    const total = quantityCur*cartData[objIndex].price
+                    cartData[objIndex].stockCurr = stockCur
+                    cartData[objIndex].quantityCurr = quantityCur
+                    cartData[objIndex].total = total
+                    setCartData([...new Set(cartData)])
+                }}
+            )
+        }
+    }
 
     return (
         <tr className="bg-white border-b hover:bg-gray-100 text-gray-900 font-bold" key={id}>
@@ -28,7 +53,7 @@ export default function Product({item}) {
             <td className="px-6 py-4 font-medium font-bold align-middle">
                 
                 <input 
-                    className="w-12 h-full outline-none text-center rounded-full" 
+                    className="w-16 h-full outline-none text-center rounded-full" 
                     type="number" 
                     name="quantity"
                     value={stocks}
@@ -45,16 +70,18 @@ export default function Product({item}) {
                         onClick={()=>{
                             if (quantity >= stock) {
                                 setQuantity(quantity)
-                                setStocks(0)   
+                                setStocks(0)
+                                updateStock(id, 0, quantity)
                             } else {
                                 setQuantity(quantity+1)
                                 setStocks(stocks-1)
+                                updateStock(id, stocks-1, quantity+1)
                             }
                         }}>
                         add
                     </button>
                     <input 
-                        className="w-12 h-full outline-none text-center rounded-full" 
+                        className="w-16 h-full outline-none text-center rounded-full" 
                         type="number" 
                         name="quantity"
                         value={quantity}                    
@@ -67,9 +94,11 @@ export default function Product({item}) {
                             if (quantity > 0) {
                                 setStocks(stocks+1);
                                 setQuantity(quantity-1);
+                                updateStock(id, stocks+1, quantity-1)
                             } else {
                                 setStocks(stocks);
                                 setQuantity(0);
+                                updateStock(id, stocks, 0)
                             }
                         }}>
                         remove

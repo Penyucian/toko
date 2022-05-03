@@ -1,20 +1,19 @@
-import React from "react";
-import { useEffect, useState} from "react";
+import React,{useEffect} from "react";
 import Product from "./Product";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
 
 const queryClient = new QueryClient() 
 
-export default function ListProduct({search}) {
+export default function ListProduct({search, setCartData2}) {
     return (
         <QueryClientProvider client={queryClient}>
-            <Inject search={search}/>
+            <Inject search={search} setCartData2={setCartData2}/>
         </QueryClientProvider>
     )
 } 
 
-function Inject({search}) {
+function Inject({search, setCartData2}) {
 
     const {isLoading, error, data} = useQuery('repoData', ()=>fetch('http://localhost:3000/api/obat').then(res => res.json()))
 
@@ -28,6 +27,8 @@ function Inject({search}) {
     )
 
     if (error) return <p className="h-screen w-screen flex justify-center items-center">{error}</p>
+
+    setCartData2(data)
 
     const getBySearch = data.result.filter((item) =>{
         return (item.name.toLowerCase().includes(search.toLowerCase()) || item.category.toLowerCase().includes(search.toLowerCase()))
@@ -64,7 +65,6 @@ function Inject({search}) {
                         </thead>
                         <tbody className="h-1/2">
                             { getBySearch.map((item) => {
-                                console.log(item);
                                 return (
                                     <Product item={item} key={item.id} />
                                 )    
